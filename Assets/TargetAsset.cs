@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class TargetAsset : MonoBehaviour {
 
-	// Use this for initialization
+	public GameObject asset;
+
 	void Start () {
-		
+		Events.OnShoot += OnShoot;
+		Events.OnStartAgain += OnStartAgain;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+	void OnShoot () {
+		asset.SetActive (false);
+	}
+	void OnStartAgain()
+	{
+		asset.SetActive (true);
 	}
 }
