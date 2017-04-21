@@ -43,26 +43,23 @@ public class IA : MonoBehaviour {
 			print ("GOL comun: force" + force + "  __ rand: " + rand);
 		}
 
-		float throwTo = rot.y / 4;
-		if (ataja)
-			CatchBall (throwTo);
-		else
-			ThrowOtherSide (throwTo*-1);
-	}
-	void CatchBall(float _x)
-	{
-		goalKeeperArea.SetActive (true);
-		Events.OnGoalKeeperThrow (_x);
-	}
-	void ThrowOtherSide(float _x)
-	{
-		if (Mathf.Abs (_x) < 2) {
-			if (_x > 0)
-				_x += 2;
-			else
-				_x += -2;
+		float throwTo = rot.y / 2;
+		Vector2 ballPos = new Vector2 (throwTo, rot.x);
+
+		if (Game.Instance.gameManager.siempreAtaja)
+			ataja = true;
+		
+		//ataja:
+		if (ataja) {
+			goalKeeperArea.SetActive (true);
+			Events.OnGoalKeeperThrow (ballPos, false);
 		}
-		Events.OnGoalKeeperThrow (_x);
+		// se tira para el otro lado:
+		else {
+			Events.OnGoalKeeperThrow (ballPos, true);
+		}
+
+
 	}
 	void OnStartAgain()
 	{

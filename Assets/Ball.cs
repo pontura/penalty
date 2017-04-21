@@ -11,6 +11,7 @@ public class Ball : MonoBehaviour {
 	public void Init(float _speed)
 	{
 		rb = GetComponent<Rigidbody> ();
+		rb.isKinematic = false;
 		done = false;
 		this.speed = _speed;
 		rb.AddForce(transform.forward * speed, ForceMode.Impulse);
@@ -32,7 +33,7 @@ public class Ball : MonoBehaviour {
 		if (done)
 			return;
 		if (other.gameObject.tag == "goalKeeperArea") {
-			Events.BallCatched ();
+			Events.BallCatched (this);
 			done = true;
 		}
 	}

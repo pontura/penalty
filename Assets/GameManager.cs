@@ -5,6 +5,8 @@ using VRStandardAssets.Utils;
 
 public class GameManager : MonoBehaviour {
 
+	public bool siempreAtaja;
+
 	public GameObject floor;
 	public GameObject mainCamera;
 	public GameObject ball;
@@ -14,6 +16,7 @@ public class GameManager : MonoBehaviour {
 	public VRInput m_VRInput;
 	private ResultsManager resultsManager;
 	private IA ia;
+
 
 	public types type;
 	public enum types
@@ -105,9 +108,10 @@ public class GameManager : MonoBehaviour {
 	}
 	IEnumerator DoTransition()
 	{
-		yield return new WaitForSeconds (0.75f);
+		yield return new WaitForSeconds (0.70f);
 		Shoot ();
-
+		yield return new WaitForSeconds (0.05f);
+		RealShoot ();
 		yield return new WaitForSeconds (1.5f);
 		yield return StartCoroutine(vrCameraFade.BeginFadeOut(1, false));
 		SetFloors(false);
@@ -122,9 +126,11 @@ public class GameManager : MonoBehaviour {
 		yield return StartCoroutine(vrCameraFade.BeginFadeIn(1, false));
 
 	}
+	Vector3 rot;
+	float force;
 	void Shoot()
 	{
-		Vector3 rot = ball.transform.eulerAngles;
+		rot = ball.transform.eulerAngles;
 		rot.x += -14;
 
 		if (rot.y > 180)
@@ -152,9 +158,13 @@ public class GameManager : MonoBehaviour {
 		if (rot.x > 0)
 			rot.x = 0;
 
-		float force = Mathf.Lerp(10, 70, (float)result/10);
-		ballsManager.Init (ball.transform.localPosition, Quaternion.Euler (rot), force);
+		force = Mathf.Lerp(10, 70, (float)result/10);
 		ia.Calculate(rot, (float)result);
+
+	}
+	void RealShoot()
+	{
+		ballsManager.Init (ball.transform.localPosition, Quaternion.Euler (rot), force);
 		ball.SetActive (false);
 	}
 	void SetFloors(bool isOn)

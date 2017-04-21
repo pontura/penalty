@@ -32,7 +32,7 @@ public class ResultsManager : MonoBehaviour {
 	{
 		result = results.GOL;
 	}
-	void BallCatched()
+	void BallCatched(Ball ball)
 	{
 		result = results.CATCHED;
 	}

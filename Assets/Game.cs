@@ -7,6 +7,7 @@ public class Game : MonoBehaviour
 {
 	const string PREFAB_PATH = "Game";    
 	static Game mInstance = null;
+	public GameManager gameManager;
 
 	public static Game Instance
 	{
@@ -25,6 +26,7 @@ public class Game : MonoBehaviour
 			return;
 		}
 		DontDestroyOnLoad(this.gameObject);
+		gameManager = GetComponent<GameManager> ();
 
 	}
 }
