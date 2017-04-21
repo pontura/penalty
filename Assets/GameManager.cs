@@ -5,12 +5,15 @@ using VRStandardAssets.Utils;
 
 public class GameManager : MonoBehaviour {
 
+	public GameObject floor;
 	public GameObject mainCamera;
 	public GameObject ball;
 	public Ball realBall;
-	public Transform container;
 	public Potenciometer potenciometer;
 	public VRCameraFade vrCameraFade;
+	public VRInput m_VRInput;
+	private ResultsManager resultsManager;
+	private IA ia;
 
 	public types type;
 	public enum types
@@ -24,12 +27,18 @@ public class GameManager : MonoBehaviour {
 	{
 		ON_AIMING,
 		SHOOTING,
-		READY
+		GOL
 	}
 	private int offsetRotation = 50;
+	private BallsManager ballsManager;
 
 	void Start () {
+		ballsManager = GetComponent<BallsManager> ();
+		ia = GetComponent<IA> ();
+		resultsManager = GetComponent<ResultsManager> ();
 		Events.OnShoot += OnShoot;
+		m_VRInput.OnDown += OnDown;
+		m_VRInput.OnUp += OnUp;
 	}
 	void Update()
 	{
@@ -47,15 +56,9 @@ public class GameManager : MonoBehaviour {
 
 		}
 	}
-	public VRInput m_VRInput;
-
-	void OnEnable()
-	{
-		m_VRInput.OnDown += OnDown;
-		m_VRInput.OnUp += OnUp;
-	}
 	void OnDisable()
 	{
+		Events.OnShoot -= OnShoot;
 		m_VRInput.OnDown -= OnDown;
 		m_VRInput.OnUp -= OnUp;
 	}
@@ -67,9 +70,13 @@ public class GameManager : MonoBehaviour {
 	void OnUp()
 	{
 		if (state == states.ON_AIMING) {
-			Events.OnShowPotenciometer (false);
+			Invoke ("OnHidePotenciometer", 1);
 			Events.OnShoot ();
 		}
+	}
+	void OnHidePotenciometer()
+	{
+		Events.OnShowPotenciometer (false);
 	}
 
 	void MiraDirecta()
@@ -91,7 +98,32 @@ public class GameManager : MonoBehaviour {
 	void OnShoot () {
 		if (state == states.SHOOTING)
 			return;
+		
 		state = states.SHOOTING;
+
+		StartCoroutine (DoTransition ());
+	}
+	IEnumerator DoTransition()
+	{
+		yield return new WaitForSeconds (0.75f);
+		Shoot ();
+
+		yield return new WaitForSeconds (1.5f);
+		yield return StartCoroutine(vrCameraFade.BeginFadeOut(1, false));
+		SetFloors(false);
+		Events.OnShowResult(resultsManager.GetResult(), true);
+		yield return new WaitForSeconds (1);
+		Events.OnStartAgain ();
+		ball.SetActive (true);
+		state = states.ON_AIMING;
+		yield return new WaitForSeconds (0.2f);
+		SetFloors(true);
+		Events.OnShowResult("", false);
+		yield return StartCoroutine(vrCameraFade.BeginFadeIn(1, false));
+
+	}
+	void Shoot()
+	{
 		Vector3 rot = ball.transform.eulerAngles;
 		rot.x += -14;
 
@@ -99,9 +131,9 @@ public class GameManager : MonoBehaviour {
 			rot.y = rot.y - 360;
 		if (rot.x > 180)
 			rot.x = rot.x - 360;
-			
+
 		rot.y *= 1.1f;
-		
+
 		float result = potenciometer.value;
 		result *= 10;
 		if (result < 7) {
@@ -114,27 +146,22 @@ public class GameManager : MonoBehaviour {
 				rot.y -=  diff*1.5f;
 			else
 				rot.y += diff*1.5f;
-			
+
 			rot.x -= (diff*3);
 		}
 		if (rot.x > 0)
 			rot.x = 0;
 
-		float value = Mathf.Lerp(10, 70, (float)result/10);
-		Ball newBall = Instantiate (realBall, ball.transform.localPosition, Quaternion.Euler (rot),container);
-		newBall.Init (value);
-		StartCoroutine (DoTransition ());
+		float force = Mathf.Lerp(10, 70, (float)result/10);
+		ballsManager.Init (ball.transform.localPosition, Quaternion.Euler (rot), force);
+		ia.Calculate(rot, (float)result);
+		ball.SetActive (false);
 	}
-	IEnumerator DoTransition()
+	void SetFloors(bool isOn)
 	{
-		yield return new WaitForSeconds (1.5f);
-		yield return StartCoroutine(vrCameraFade.BeginFadeOut(1, false));
-		print ("Done");
-		yield return new WaitForSeconds (0.5f);
-		Events.OnStartAgain ();
-		state = states.ON_AIMING;
-		yield return new WaitForSeconds (0.2f);
-		yield return StartCoroutine(vrCameraFade.BeginFadeIn(1, false));
-
+		if (isOn)
+			transform.localPosition = new Vector3 (0, 0, 0);
+		else
+			transform.localPosition = new Vector3 (0, -1000, 0);
 	}
 }

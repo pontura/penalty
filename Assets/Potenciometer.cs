@@ -24,7 +24,7 @@ public class Potenciometer : MonoBehaviour {
 	}
 	void OnShoot()
 	{
-		asset.SetActive (false);
+		isOn = false;
 	}
 	void OnShowPotenciometer(bool isOn)
 	{
