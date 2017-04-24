@@ -11,9 +11,16 @@ public class ResultScreen : MonoBehaviour {
 	void Start () {
 		asset.SetActive (false);
 		Events.OnShowResult += OnShowResult;
+		Events.OnIntroScreen += OnIntroScreen;
 	}
 	void OnDestroy () {
 		Events.OnShowResult -= OnShowResult;
+		Events.OnIntroScreen -= OnIntroScreen;
+	}
+	void OnIntroScreen()
+	{
+		asset.SetActive (false);
+		field.text = "";
 	}
 	void OnShowResult (string text, bool isOn) {
 		if (isOn) {

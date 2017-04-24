@@ -31,7 +31,10 @@ public class Potenciometer : MonoBehaviour {
 		this.isOn = isOn;
 		if (isOn)
 			asset.SetActive (true);
-		else asset.SetActive (false);
+		else {
+			bar.fillAmount = 0;
+			asset.SetActive (false);
+		}
 	}
 	void Update () {
 		

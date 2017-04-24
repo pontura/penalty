@@ -24,6 +24,10 @@ public class ResultsManager : MonoBehaviour {
 		Events.Goal -= Goal;
 		Events.OnStartAgain -= OnStartAgain;
 	}
+	void OnIntroScreen()
+	{
+		OnStartAgain ();
+	}
 	void OnStartAgain()
 	{
 		result = results.NONE;

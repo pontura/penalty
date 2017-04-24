@@ -14,6 +14,7 @@ public class GoalKeeper : MonoBehaviour {
 		MIDDLE,
 		DOWN
 	}
+	private GoalKeeerAnimations.directions[] directions;
 
 	public states state;
 	public enum states
@@ -31,6 +32,15 @@ public class GoalKeeper : MonoBehaviour {
 		Events.OnStartAgain += OnStartAgain;
 		Events.BallCatched += BallCatched;
 		initialPosition = transform.localPosition;
+
+		directions = new GoalKeeerAnimations.directions[7];
+		directions[0] = GoalKeeerAnimations.directions.LEFT_TOP;
+		directions[1] = GoalKeeerAnimations.directions.RIGHT_TOP;
+		directions[2] = GoalKeeerAnimations.directions.LEFT_BOTTOM;
+		directions[3] = GoalKeeerAnimations.directions.RIGHT_BOTTOM;
+		directions[4] = GoalKeeerAnimations.directions.LEFT_MID;
+		directions[5] = GoalKeeerAnimations.directions.RIGHT_MID;
+		directions[6] = GoalKeeerAnimations.directions.MID_CENTER;
 	}
 	void OnDestroy () {
 		state = states.IDLE;
@@ -58,9 +68,9 @@ public class GoalKeeper : MonoBehaviour {
 			transform.localPosition = Vector3.Lerp (transform.localPosition, moveTo, 0.02f);
 		}
 	}
+	GoalKeeerAnimations.directions dir;
 	void OnGoalKeeperThrow(Vector2 pos, bool goal)
-	{
-		print ("____" + pos);
+	{		
 
 		if (pos.y < -14)
 			ballPosition = ballPos.UP;
@@ -69,9 +79,10 @@ public class GoalKeeper : MonoBehaviour {
 		else
 			ballPosition = ballPos.DOWN;
 
+		print ("____" + pos +  "  ballPosition: " + ballPosition);
 
-		if (   pos.x > 16 
-			|| pos.x < -16 
+		if (   pos.x > 15 
+			|| pos.x < -15 
 		) {
 			SeQuedaParadoYMira (pos.x);
 			return;
@@ -79,35 +90,59 @@ public class GoalKeeper : MonoBehaviour {
 		
 		this.moveTo = initialPosition; 
 
+
+		if (ballPosition == ballPos.UP && pos.x > 0)
+			dir = GoalKeeerAnimations.directions.LEFT_TOP;
+		else if (ballPosition == ballPos.UP && pos.x < 0)
+			dir = GoalKeeerAnimations.directions.RIGHT_TOP;
+
+		else if (ballPosition == ballPos.DOWN && pos.x > 0)
+			dir = GoalKeeerAnimations.directions.LEFT_BOTTOM;
+		else if (ballPosition == ballPos.DOWN && pos.x < 0)
+			dir = GoalKeeerAnimations.directions.RIGHT_BOTTOM;
+
+		else if (ballPosition == ballPos.MIDDLE && pos.x >2)
+			dir = GoalKeeerAnimations.directions.LEFT_MID;
+		else if (ballPosition == ballPos.MIDDLE && pos.x <-2)
+			dir = GoalKeeerAnimations.directions.RIGHT_MID;
+
+		else if ( pos.x <2.5f && pos.x >-2.5f)
+			dir = GoalKeeerAnimations.directions.MID_CENTER;
+		
+		//Si ataja:
 		if (!goal) {
 			moveTo.x = pos.x;
-			if (ballPosition == ballPos.UP && pos.x > 0)
-				anim.JumpTo (GoalKeeerAnimations.directions.LEFT_TOP, false);
-			else if (ballPosition == ballPos.UP && pos.x < 0)
-				anim.JumpTo (GoalKeeerAnimations.directions.RIGHT_TOP, false);
-			else if (ballPosition == ballPos.DOWN && pos.x > 0)
-				anim.JumpTo (GoalKeeerAnimations.directions.LEFT_BOTTOM, false);
-			else if (ballPosition == ballPos.DOWN && pos.x < 0)
-				anim.JumpTo (GoalKeeerAnimations.directions.RIGHT_BOTTOM, false);
-			else if ( pos.x <2.5f && pos.x >-2.5f)
-				anim.JumpTo (GoalKeeerAnimations.directions.MID_CENTER, false);
 		}
-
-
 		// no antaja:
 		else {	
-			moveTo.x = (pos.x * -1);
+			dir = GetRandomTiradaSinAtajar(pos);
+			if (dir == GoalKeeerAnimations.directions.LEFT_BOTTOM 
+				|| dir == GoalKeeerAnimations.directions.LEFT_MID
+				|| dir == GoalKeeerAnimations.directions.LEFT_TOP) {
+				moveTo.x = 8;
+			} else {
+				moveTo.x = -8;
+			}
 		}
+		anim.JumpTo (dir, false);
 		this.state = states.MOVEING;
 		Invoke ("Reset", 0.5f);
+	}
+	GoalKeeerAnimations.directions GetRandomTiradaSinAtajar(Vector2 pos)
+	{
+		GoalKeeerAnimations.directions diferentDir = directions [Random.Range (0, directions.Length - 1)];
+		if (diferentDir != dir)
+			return diferentDir;
+		else
+			return GetRandomTiradaSinAtajar (pos);
 	}
 	void SeQuedaParadoYMira(float _x)
 	{
 		print ("PARADO");
 		if (_x>0)
-			anim.JumpTo (GoalKeeerAnimations.directions.LEFT_MID, false);
+			anim.JumpTo (GoalKeeerAnimations.directions.CENTER_MIRA, false);
 		else if (_x<0)
-			anim.JumpTo (GoalKeeerAnimations.directions.RIGHT_MID, false);
+			anim.JumpTo (GoalKeeerAnimations.directions.CENTER_MIRA, false);
 		state = states.DONE;
 	}
 	void Reset()

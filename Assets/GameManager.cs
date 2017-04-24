@@ -15,8 +15,8 @@ public class GameManager : MonoBehaviour {
 	public VRCameraFade vrCameraFade;
 	public VRInput m_VRInput;
 	private ResultsManager resultsManager;
+	private IntroScreen introScreen;
 	private IA ia;
-
 
 	public types type;
 	public enum types
@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour {
 	public states state;
 	public enum states
 	{
+		WAITING,
 		ON_AIMING,
 		SHOOTING,
 		GOL
@@ -36,15 +37,29 @@ public class GameManager : MonoBehaviour {
 	private BallsManager ballsManager;
 
 	void Start () {
+		
+	#if UNITY_ANDROID
+		siempreAtaja = false;
+	#endif
+
+		introScreen = GetComponent<IntroScreen> ();
+		introScreen.OnIntroScreen ();
 		ballsManager = GetComponent<BallsManager> ();
 		ia = GetComponent<IA> ();
 		resultsManager = GetComponent<ResultsManager> ();
 		Events.OnShoot += OnShoot;
 		m_VRInput.OnDown += OnDown;
 		m_VRInput.OnUp += OnUp;
+		Events.OnStartAgain += OnStartAgain;
+	}
+	void OnStartAgain()
+	{
+		StartCoroutine (StartAgainReoutine ());
 	}
 	void Update()
 	{
+		if (state == states.WAITING)
+			return;
 		if (state == states.SHOOTING)
 			return;
 		if (state == states.ON_AIMING) {
@@ -65,13 +80,24 @@ public class GameManager : MonoBehaviour {
 		m_VRInput.OnDown -= OnDown;
 		m_VRInput.OnUp -= OnUp;
 	}
+	private float timeStartedPressing = 0;
 	void OnDown()
 	{
-		if(state == states.ON_AIMING)
-		Events.OnShowPotenciometer (true);
+		if (state == states.ON_AIMING) {
+			Events.OnShowPotenciometer (true);
+			timeStartedPressing = Time.time;
+		}
 	}
 	void OnUp()
 	{
+		if (timeStartedPressing == 0)
+			return;
+		float timePassed = Time.time - timeStartedPressing;
+		if (timePassed < 0.15f ) {
+			Events.OnShowPotenciometer (false);
+			return;
+		}
+		timeStartedPressing = 0;
 		if (state == states.ON_AIMING) {
 			Invoke ("OnHidePotenciometer", 1);
 			Events.OnShoot ();
@@ -117,14 +143,16 @@ public class GameManager : MonoBehaviour {
 		SetFloors(false);
 		Events.OnShowResult(resultsManager.GetResult(), true);
 		yield return new WaitForSeconds (1);
-		Events.OnStartAgain ();
+		Events.OnIntroScreen ();
+	}
+	IEnumerator StartAgainReoutine()
+	{
 		ball.SetActive (true);
-		state = states.ON_AIMING;
 		yield return new WaitForSeconds (0.2f);
+		state = states.ON_AIMING;
 		SetFloors(true);
 		Events.OnShowResult("", false);
 		yield return StartCoroutine(vrCameraFade.BeginFadeIn(1, false));
-
 	}
 	Vector3 rot;
 	float force;

@@ -5,6 +5,7 @@ using UnityEngine;
 public class TargetAsset : MonoBehaviour {
 
 	public GameObject asset;
+	public GameObject asset2;
 
 	void Start () {
 		Events.OnShoot += OnShoot;
@@ -12,9 +13,11 @@ public class TargetAsset : MonoBehaviour {
 	}
 	void OnShoot () {
 		asset.SetActive (false);
+		asset2.SetActive (true);
 	}
 	void OnStartAgain()
 	{
+		asset2.SetActive (false);
 		asset.SetActive (true);
 	}
 }

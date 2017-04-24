@@ -21,6 +21,7 @@ public class IA : MonoBehaviour {
 		//force 10 es la mejor!
 		int rand = Random.Range (0, (int)force);
 		bool ataja = false;
+		bool vaMuyLento = false;
 
 		////ATAJA:
 		if (force > 9.5f && force < 10.5f) {
@@ -35,6 +36,7 @@ public class IA : MonoBehaviour {
 		} else if (force < 4) {	
 			ataja = true;
 			print ("Atajo por patear sin fuerza " + force);
+			vaMuyLento = true;
 		} else if (rand < 3) {
 			ataja = true;
 			print ("Ataja force:" + force + " __ rand: " + rand + " < 3");
@@ -48,7 +50,10 @@ public class IA : MonoBehaviour {
 
 		if (Game.Instance.gameManager.siempreAtaja)
 			ataja = true;
-		
+
+		if (vaMuyLento) {
+			ballPos.y = 0;
+		}
 		//ataja:
 		if (ataja) {
 			goalKeeperArea.SetActive (true);

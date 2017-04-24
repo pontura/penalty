@@ -17,7 +17,8 @@ public class GoalKeeerAnimations : MonoBehaviour {
 		MID_BOTTOM,
 		RIGHT_TOP,
 		RIGHT_MID,
-		RIGHT_BOTTOM
+		RIGHT_BOTTOM,
+		CENTER_MIRA
 	}
 
 	void Start () {
@@ -51,13 +52,16 @@ public class GoalKeeerAnimations : MonoBehaviour {
 			animName = "der_arriba_si";
 			break;
 		case directions.LEFT_MID:
-			animName = "center_izq_no";
+			animName = "izq_media_si";
 			break;
 		case directions.RIGHT_MID:
-			animName = "center_izq_no";
+			animName = "der_media_si";
 			break;
 		case directions.MID_CENTER:
 			anim.Play ("centro_medio_si");
+			break;
+		case directions.CENTER_MIRA:
+			anim.Play ("center_izq_no");
 			break;
 		}
 		if (animName != "") {
