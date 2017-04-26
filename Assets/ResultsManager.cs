@@ -44,10 +44,10 @@ public class ResultsManager : MonoBehaviour {
 	{
 		switch (result) {
 			case results.GOL:
-				return "GOL";
+				return "gol";
 			case results.CATCHED:
-				return "Atajada!";
+				return "atajada";
 		}
-		return "Fuera!";
+		return "afuera";
 	}
 }

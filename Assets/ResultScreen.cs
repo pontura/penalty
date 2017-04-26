@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class ResultScreen : MonoBehaviour {
 
 	public GameObject asset;
-	public Text field;
+
+	public GameObject gol;
+	public GameObject atajada;
+	public GameObject afuera;
 
 	void Start () {
 		asset.SetActive (false);
@@ -20,15 +24,24 @@ public class ResultScreen : MonoBehaviour {
 	void OnIntroScreen()
 	{
 		asset.SetActive (false);
-		field.text = "";
+		gol.SetActive (false);
+		atajada.SetActive (false);
+		afuera.SetActive (false);
 	}
 	void OnShowResult (string text, bool isOn) {
-		if (isOn) {
+		
+		gol.SetActive (false);
+		atajada.SetActive (false);
+		afuera.SetActive (false);
+
+		if (isOn) {			
 			asset.SetActive (true);
-			field.text = text;
-		} else {
-			asset.SetActive (false);
-			field.text = "";
+			if (text == "gol")
+				gol.SetActive (true);
+			else if (text == "atajada")
+				atajada.SetActive (true);
+			else if (text == "afuera")
+				afuera.SetActive (true);
 		}
 	}
 }

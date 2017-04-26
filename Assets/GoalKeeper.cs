@@ -50,7 +50,8 @@ public class GoalKeeper : MonoBehaviour {
 	}
 	void BallCatched(Ball ball)
 	{
-		if (anim.direction == GoalKeeerAnimations.directions.MID_CENTER) {
+		if(anim.BallCatched (ball.transform.position))
+		{
 			ball.transform.GetComponent<Rigidbody> ().isKinematic = true;
 			ball.transform.SetParent (ballContainer);
 			ball.transform.localPosition = Vector3.zero;
@@ -81,8 +82,8 @@ public class GoalKeeper : MonoBehaviour {
 
 		print ("____" + pos +  "  ballPosition: " + ballPosition);
 
-		if (   pos.x > 15 
-			|| pos.x < -15 
+		if (   pos.x > 16 
+			|| pos.x < -16 
 		) {
 			SeQuedaParadoYMira (pos.x);
 			return;
@@ -90,28 +91,40 @@ public class GoalKeeper : MonoBehaviour {
 		
 		this.moveTo = initialPosition; 
 
+		float centerX = 4f;
+			
 
-		if (ballPosition == ballPos.UP && pos.x > 0)
+		if (pos.x > 0 && pos.x < centerX) {
+			if (pos.y < -20)
+				dir = GoalKeeerAnimations.directions.CENTER_TOP_LEFT;
+			else
+				dir = GoalKeeerAnimations.directions.MUEVE_IZQ;
+		} else if (pos.x < 0 && pos.x > -centerX) {
+			if (pos.y < -20)
+				dir = GoalKeeerAnimations.directions.CENTER_TOP_RIGHT;
+			else
+				dir = GoalKeeerAnimations.directions.MUEVE_DER;
+		}
+		else if (ballPosition == ballPos.UP && pos.x > centerX)
 			dir = GoalKeeerAnimations.directions.LEFT_TOP;
-		else if (ballPosition == ballPos.UP && pos.x < 0)
+		else if (ballPosition == ballPos.UP && pos.x < -centerX)
 			dir = GoalKeeerAnimations.directions.RIGHT_TOP;
 
-		else if (ballPosition == ballPos.DOWN && pos.x > 0)
+		else if (ballPosition == ballPos.DOWN && pos.x > centerX)
 			dir = GoalKeeerAnimations.directions.LEFT_BOTTOM;
-		else if (ballPosition == ballPos.DOWN && pos.x < 0)
+		else if (ballPosition == ballPos.DOWN && pos.x < -centerX)
 			dir = GoalKeeerAnimations.directions.RIGHT_BOTTOM;
 
-		else if (ballPosition == ballPos.MIDDLE && pos.x >2)
+		else if (ballPosition == ballPos.MIDDLE && pos.x >centerX)
 			dir = GoalKeeerAnimations.directions.LEFT_MID;
-		else if (ballPosition == ballPos.MIDDLE && pos.x <-2)
+		else if (ballPosition == ballPos.MIDDLE && pos.x <-centerX)
 			dir = GoalKeeerAnimations.directions.RIGHT_MID;
 
-		else if ( pos.x <2.5f && pos.x >-2.5f)
-			dir = GoalKeeerAnimations.directions.MID_CENTER;
+
 		
 		//Si ataja:
 		if (!goal) {
-			moveTo.x = pos.x;
+			moveTo.x = pos.x*1.1f;
 		}
 		// no antaja:
 		else {	
@@ -119,9 +132,9 @@ public class GoalKeeper : MonoBehaviour {
 			if (dir == GoalKeeerAnimations.directions.LEFT_BOTTOM 
 				|| dir == GoalKeeerAnimations.directions.LEFT_MID
 				|| dir == GoalKeeerAnimations.directions.LEFT_TOP) {
-				moveTo.x = 8;
+				moveTo.x = Random.Range(7,10);
 			} else {
-				moveTo.x = -8;
+				moveTo.x = - Random.Range(7,10);
 			}
 		}
 		anim.JumpTo (dir, false);
@@ -140,9 +153,9 @@ public class GoalKeeper : MonoBehaviour {
 	{
 		print ("PARADO");
 		if (_x>0)
-			anim.JumpTo (GoalKeeerAnimations.directions.CENTER_MIRA, false);
+			anim.JumpTo (GoalKeeerAnimations.directions.CENTER_MIRA_IZQ, false);
 		else if (_x<0)
-			anim.JumpTo (GoalKeeerAnimations.directions.CENTER_MIRA, false);
+			anim.JumpTo (GoalKeeerAnimations.directions.CENTER_MIRA_DER, false);
 		state = states.DONE;
 	}
 	void Reset()

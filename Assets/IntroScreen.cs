@@ -15,7 +15,7 @@ public class IntroScreen : MonoBehaviour {
 	public bool onOver;
 	bool ready;
 
-	void Start () {
+	void Start () {		
 		over.enabled = false;
 		bar.fillAmount = 0;
 		button.OnOver +=  OnOver;
@@ -31,11 +31,15 @@ public class IntroScreen : MonoBehaviour {
 	}
 	void Update()
 	{
+		if (asset.activeSelf && Game.Instance.gameManager.DEBUG) {
+			Events.OnRestart ();
+			asset.SetActive (false);
+		}
 		if (clicked && onOver) {
 			bar.fillAmount += Time.deltaTime * speed;
 			if (bar.fillAmount >= 1) {
 				bar.fillAmount = 1;
-				Events.OnStartAgain ();
+				Events.OnRestart ();
 				ready = true;
 				clicked = false;
 				asset.SetActive (false);
@@ -48,18 +52,20 @@ public class IntroScreen : MonoBehaviour {
 		bar.fillAmount = 0;
 	}
 	void OnOut () {
+		
 		onOver = false;
+		
 		over.enabled = false;
 		bar.fillAmount = 0;
 	}
 	void OnDown()
 	{
+		
 		clicked = true;
 		print ("OnDown");
 	}
 	void OnUp()
-	{
-		clicked = false;
+	{		
 		bar.fillAmount = 0;
 	}
 }

@@ -6,8 +6,10 @@ using VRStandardAssets.Utils;
 public class GameManager : MonoBehaviour {
 
 	public bool siempreAtaja;
+	public bool DEBUG;
 
-	public GameObject floor;
+	public ParticleSystem particles;
+	public GameObject all;
 	public GameObject mainCamera;
 	public GameObject ball;
 	public Ball realBall;
@@ -30,14 +32,15 @@ public class GameManager : MonoBehaviour {
 	{
 		WAITING,
 		ON_AIMING,
-		SHOOTING,
-		GOL
+		SHOOTING
 	}
 	private int offsetRotation = 50;
 	private BallsManager ballsManager;
 
 	void Start () {
-		
+
+		all.SetActive (false);
+
 	#if UNITY_ANDROID
 		siempreAtaja = false;
 	#endif
@@ -51,10 +54,24 @@ public class GameManager : MonoBehaviour {
 		m_VRInput.OnDown += OnDown;
 		m_VRInput.OnUp += OnUp;
 		Events.OnStartAgain += OnStartAgain;
+		Events.Goal += Goal;
+	}
+	void Goal()
+	{
+		particles.gameObject.SetActive (true);
+		particles.Play ();
+		Invoke ("ResetParticles", 6);
+	}
+	void ResetParticles()
+	{
+		particles.Stop ();
 	}
 	void OnStartAgain()
 	{
+		ResetBall ();
 		StartCoroutine (StartAgainReoutine ());
+		particles.Stop ();
+		particles.gameObject.SetActive (false);
 	}
 	void Update()
 	{
@@ -139,10 +156,10 @@ public class GameManager : MonoBehaviour {
 		yield return new WaitForSeconds (0.05f);
 		RealShoot ();
 		yield return new WaitForSeconds (1.5f);
-		yield return StartCoroutine(vrCameraFade.BeginFadeOut(1, false));
+		yield return StartCoroutine(vrCameraFade.BeginFadeOut(0.5f, false));
 		SetFloors(false);
 		Events.OnShowResult(resultsManager.GetResult(), true);
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (3);
 		Events.OnIntroScreen ();
 	}
 	IEnumerator StartAgainReoutine()
@@ -195,11 +212,15 @@ public class GameManager : MonoBehaviour {
 		ballsManager.Init (ball.transform.localPosition, Quaternion.Euler (rot), force);
 		ball.SetActive (false);
 	}
+	void ResetBall()
+	{
+		ballsManager.Reset ();
+	}
 	void SetFloors(bool isOn)
 	{
 		if (isOn)
-			transform.localPosition = new Vector3 (0, 0, 0);
+			all.SetActive (true);
 		else
-			transform.localPosition = new Vector3 (0, -1000, 0);
+			all.SetActive (false);
 	}
 }

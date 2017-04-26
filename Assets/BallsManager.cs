@@ -19,7 +19,13 @@ public class BallsManager : MonoBehaviour {
 			balls [a] = newBall;
 		}
 	}
-	
+	public void Reset()
+	{
+		Ball newBall = balls [id];
+		newBall.transform.position = Vector3.zero;
+		newBall.transform.SetParent(container);
+		newBall.rb.velocity = Vector3.zero;
+	}
 	public void Init(Vector3 pos, Quaternion rot, float force)
 	{
 		Ball newBall = balls [id];
