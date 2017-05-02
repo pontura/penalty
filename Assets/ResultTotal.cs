@@ -28,13 +28,13 @@ public class ResultTotal : MonoBehaviour {
 				sum++;
 		
 		if (sum == 0)
-			result = "¡No metiste una!";
+			result = "Los penales no son lo tuyo…";
 		else if (sum == 1)
-			result = "¡Flojo! Metiste un solo gol...";
+			result = "¡A entrenar más para la próxima!";
 		else if (sum == 2)
-			result = "¡Bien! Dos goles de tres...";
+			result = "¡Felicitaciones!\n¡Buen promedio!";
 		else if (sum == 3)
-			result = "¡Sos un profesional!";
+			result = "¡Felicitaciones goleador!\n¡Sos un campeón TOTAL!";
 		
 		field.text = result;
 		done = false;
