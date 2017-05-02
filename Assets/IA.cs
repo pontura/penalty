@@ -17,7 +17,6 @@ public class IA : MonoBehaviour {
 	}
 	public void Calculate(Vector3 rot, float force)
 	{		
-
 		//force 10 es la mejor!
 		int rand = Random.Range (0, (int)force);
 		bool ataja = false;
@@ -26,23 +25,35 @@ public class IA : MonoBehaviour {
 		////ATAJA:
 		if (force > 9.5f && force < 10.5f) {
 			rand = Random.Range (0, 100);
-			if (rand < 10) {
+			if (rand < 20) {
 				ataja = true;
-				print ("ATAJO DE PEDO. en perfect! con force: " + force + " rand: " + rand  + "> 10");
+				Debug.Log ("ATAJO DE PEDO. en perfect! con force: " + force + " rand: " + rand  + "> 10");
+			} else if(rot.x<13 && rot.x>-13 && Random.Range (0, 100)<33)
+			{
+				ataja = true;
+				Debug.Log ("ATAJO por patear al centro. en perfect! con force: " + force + " rand: " + rand  + "> 10");
 			} else {
 				ataja = false;
-				print ("GOL perfect! con force: " + force);
+				Debug.Log ("GOL perfect! con force: " + force);
 			}
-		} else if (force < 4) {	
+		} else if (force < 3) {	
 			ataja = true;
-			print ("Atajo por patear sin fuerza " + force);
+			Debug.Log ("Atajo por patear sin fuerza " + force);
+			vaMuyLento = true;
+		} else if (force < 4 && Random.Range (0, 100)<80) {	
+			ataja = true;
+			Debug.Log ("Atajo por patear sin fuerza " + force);
 			vaMuyLento = true;
 		} else if (rand < 3) {
 			ataja = true;
-			print ("Ataja force:" + force + " __ rand: " + rand + " < 3");
+			Debug.Log ("Ataja force:" + force + " __ rand: " + rand + " < 3");
+		} else if(rot.x<14 && rot.x>-14 && Random.Range (0, 100)<35)
+		{
+			ataja = true;
+			Debug.Log ("ATAJO por patear al centro. con force: " + force + " rand: " + rand  + "> 10");
 		} else {
 			ataja = false;
-			print ("GOL comun: force" + force + "  __ rand: " + rand);
+			Debug.Log ("GOL comun: force" + force + "  __ rand: " + rand);
 		}
 
 		float throwTo = rot.y / 2;

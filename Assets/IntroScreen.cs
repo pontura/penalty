@@ -38,6 +38,7 @@ public class IntroScreen : MonoBehaviour {
 		if (clicked && onOver) {
 			bar.fillAmount += Time.deltaTime * speed;
 			if (bar.fillAmount >= 1) {
+				
 				bar.fillAmount = 1;
 				Events.OnRestart ();
 				ready = true;
@@ -59,10 +60,8 @@ public class IntroScreen : MonoBehaviour {
 		bar.fillAmount = 0;
 	}
 	void OnDown()
-	{
-		
+	{		
 		clicked = true;
-		print ("OnDown");
 	}
 	void OnUp()
 	{		

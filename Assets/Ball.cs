@@ -35,6 +35,9 @@ public class Ball : MonoBehaviour {
 		if (other.gameObject.tag == "goalKeeperArea") {
 			Events.BallCatched (this);
 			done = true;
+		} else if (other.gameObject.tag == "goalPalo") {
+			Events.OnPalo ();
+			done = true;
 		}
 	}
 

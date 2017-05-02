@@ -34,7 +34,7 @@ public class SkyboxManager : MonoBehaviour {
 	{
 		yield return StartCoroutine(vrCameraFade.BeginFadeOut(0.5f, false));
 		RenderSettings.skybox = stadium;
-		Events.OnStartAgain ();
+		Game.Instance.gameManager.CheckToRestart();
 	}
 	
 }

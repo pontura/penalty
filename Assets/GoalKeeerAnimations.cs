@@ -104,7 +104,6 @@ public class GoalKeeerAnimations : MonoBehaviour {
 
 		}
 
-		print("ANIM : " + animName);
 
 		if (animName != "") {
 			anim [animName].speed = speed;

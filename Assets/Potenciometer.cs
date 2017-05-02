@@ -43,9 +43,12 @@ public class Potenciometer : MonoBehaviour {
 		
 		value = bar.fillAmount + (speed*Time.deltaTime*multiplier);
 		bar.fillAmount = value;
-		if (value > 1)
+		if (value > 1) {
 			multiplier = -1;
-		else if (value < 0)
+			Events.OnPotenciometerChangeDirection (true);
+		} else if (value < 0) {
 			multiplier = 1;
+			Events.OnPotenciometerChangeDirection (false);
+		}
 	}
 }

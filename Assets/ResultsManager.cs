@@ -5,24 +5,41 @@ using VRStandardAssets.Utils;
 
 public class ResultsManager : MonoBehaviour {
 
+	public List<bool> penalesPateados;
+
 	public results result;
 	public enum results
 	{
 		NONE,
 		GOL,
 		CATCHED,
-		OUT
+		OUT,
+		PALO
 	}
 
 	void Start () {
 		Events.BallCatched += BallCatched;
 		Events.Goal += Goal;
 		Events.OnStartAgain += OnStartAgain;
+		Events.OnPalo += OnPalo;
+		Events.OnGameOver += OnGameOver;
 	}
 	void OnDisable () {
 		Events.BallCatched -= BallCatched;
 		Events.Goal -= Goal;
 		Events.OnStartAgain -= OnStartAgain;
+		Events.OnPalo -= OnPalo;
+		Events.OnGameOver -= OnGameOver;
+	}
+	public bool isReady()
+	{
+		if(penalesPateados.Count >= 3)
+			return true;
+		return false;
+	}
+	void OnGameOver()
+	{
+		penalesPateados.Clear ();
 	}
 	void OnIntroScreen()
 	{
@@ -31,6 +48,11 @@ public class ResultsManager : MonoBehaviour {
 	void OnStartAgain()
 	{
 		result = results.NONE;
+	}
+	void OnPalo()
+	{
+		
+		result = results.PALO;
 	}
 	void Goal()
 	{
@@ -44,10 +66,16 @@ public class ResultsManager : MonoBehaviour {
 	{
 		switch (result) {
 			case results.GOL:
+				penalesPateados.Add (true);
 				return "gol";
 			case results.CATCHED:
+				penalesPateados.Add (false);
 				return "atajada";
+			case results.PALO:
+				penalesPateados.Add (false);
+				return "palo";
 		}
+		penalesPateados.Add (false);
 		return "afuera";
 	}
 }

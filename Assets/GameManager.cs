@@ -56,6 +56,14 @@ public class GameManager : MonoBehaviour {
 		Events.OnStartAgain += OnStartAgain;
 		Events.Goal += Goal;
 	}
+	public void CheckToRestart()
+	{
+		if(GetComponent<ResultsManager>().isReady())
+			Events.OnGameOver ();
+
+		Events.OnStartAgain ();
+			
+	}
 	void Goal()
 	{
 		particles.gameObject.SetActive (true);
@@ -154,13 +162,18 @@ public class GameManager : MonoBehaviour {
 		yield return new WaitForSeconds (0.70f);
 		Shoot ();
 		yield return new WaitForSeconds (0.05f);
+		Events.OnKick ();
 		RealShoot ();
 		yield return new WaitForSeconds (1.5f);
 		yield return StartCoroutine(vrCameraFade.BeginFadeOut(0.5f, false));
 		SetFloors(false);
 		Events.OnShowResult(resultsManager.GetResult(), true);
 		yield return new WaitForSeconds (3);
-		Events.OnIntroScreen ();
+
+		if(!GetComponent<ResultsManager>().isReady())
+			Events.OnRestart ();
+		else
+			Events.OnShowTotalResult ();
 	}
 	IEnumerator StartAgainReoutine()
 	{

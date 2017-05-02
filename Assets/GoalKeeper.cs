@@ -80,7 +80,7 @@ public class GoalKeeper : MonoBehaviour {
 		else
 			ballPosition = ballPos.DOWN;
 
-		print ("____" + pos +  "  ballPosition: " + ballPosition);
+		//print ("____" + pos +  "  ballPosition: " + ballPosition);
 
 		if (   pos.x > 16 
 			|| pos.x < -16 
