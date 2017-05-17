@@ -6,10 +6,15 @@ using UnityEngine.UI;
 public class ResultTotal : MonoBehaviour {
 
 	public GameObject panel;
-	public Text field;
 	public Image bar;
 	public bool done;
 	private float speed = 0.2f;
+
+	public GameObject result0;
+	public GameObject result1;
+	public GameObject result2;
+	public GameObject result3;
+
 
 	void Start () {
 		panel.SetActive (false);
@@ -17,33 +22,38 @@ public class ResultTotal : MonoBehaviour {
 		done = true;
 		Events.OnShowTotalResult += OnShowTotalResult;
 	}
+	void Reset()
+	{
+		result0.SetActive(false);
+		result1.SetActive(false);
+		result2.SetActive(false);
+		result3.SetActive(false);
+	}
 	void OnShowTotalResult()
 	{
+		Reset ();
 		panel.SetActive (true);
 		int sum = 0;
-		string result = "";
 
 		foreach (bool b in GetComponent<ResultsManager>().penalesPateados)
 			if (b)
 				sum++;
 		
 		if (sum == 0)
-			result = "Los penales no son lo tuyo…";
+			result0.SetActive(true);
 		else if (sum == 1)
-			result = "¡A entrenar más para la próxima!";
+			result1.SetActive(true);
 		else if (sum == 2)
-			result = "¡Felicitaciones!\n¡Buen promedio!";
+			result2.SetActive(true);
 		else if (sum == 3)
-			result = "¡Felicitaciones goleador!\n¡Sos un campeón TOTAL!";
+			result3.SetActive(true);
 		
-		field.text = result;
 		done = false;
 	}
 	void Update () {
 		
 		if (done)
 			return;
-		
 		bar.fillAmount += speed * Time.deltaTime;
 		if (bar.fillAmount >= 1)			
 			Done ();
@@ -53,6 +63,6 @@ public class ResultTotal : MonoBehaviour {
 		bar.fillAmount = 0;
 		done = true;
 		panel.SetActive (false);
-		Events.OnIntroScreen ();
+		Events.OnShowcongrats ();
 	}
 }

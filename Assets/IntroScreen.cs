@@ -6,6 +6,9 @@ using VRStandardAssets.Utils;
 
 public class IntroScreen : MonoBehaviour {
 
+	public GameObject logo_ex;
+	public GameObject logo_generico;
+
 	public GameObject asset;
 	public VRInteractiveItem button;
 	public Image over;
@@ -26,6 +29,13 @@ public class IntroScreen : MonoBehaviour {
 	}
 	public void OnIntroScreen()
 	{
+		if (Game.Instance.isExcellium) {
+			logo_ex.SetActive (true);
+			logo_generico.SetActive (false);
+		} else {
+			logo_ex.SetActive (false);
+			logo_generico.SetActive (true);
+		}
 		ready = false;
 		asset.SetActive (true);
 	}
@@ -40,11 +50,24 @@ public class IntroScreen : MonoBehaviour {
 			if (bar.fillAmount >= 1) {
 				
 				bar.fillAmount = 1;
-				Events.OnRestart ();
+				StartCoroutine (GotoGame ());
+
 				ready = true;
 				clicked = false;
 				asset.SetActive (false);
 			}
+		}
+	}
+	IEnumerator GotoGame()
+	{
+		if (Game.Instance.isExcellium) {
+			Events.OnSplash (true);
+			yield return new WaitForSeconds (2.5f);
+			Events.OnSplash (false);
+			Events.OnRestart ();
+		} else {
+			yield return new WaitForSeconds (0.1f);
+			Events.OnRestart ();
 		}
 	}
 	void OnOver () {

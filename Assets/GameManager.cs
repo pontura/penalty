@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour {
 	public VRInput m_VRInput;
 	private ResultsManager resultsManager;
 	private IntroScreen introScreen;
+	private SplashScreen splahsScreen;
 	private IA ia;
 
 	public types type;

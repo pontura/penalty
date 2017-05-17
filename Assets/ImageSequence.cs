@@ -10,7 +10,8 @@ public class ImageSequence : MonoBehaviour
 	//With this Material object, a reference to the game object Material can be stored  
 	private Material goMaterial;  
 	//An integer to advance frames  
-	private int frameCounter = 0;     
+	private int frameCounter = 0;    
+	public string sequence;
 
 	void Awake()  
 	{  
@@ -21,7 +22,7 @@ public class ImageSequence : MonoBehaviour
 	void Start ()  
 	{  
 		//Load all textures found on the Sequence folder, that is placed inside the resources folder  
-		this.objects = Resources.LoadAll("Sequence", typeof(Texture));  
+		this.objects = Resources.LoadAll(sequence, typeof(Texture));  
 
 		//Initialize the array of textures with the same size as the objects array  
 		this.textures = new Texture[objects.Length];  

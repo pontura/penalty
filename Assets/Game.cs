@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
+	public bool isExcellium;
+
 	const string PREFAB_PATH = "Game";    
 	static Game mInstance = null;
 	public GameManager gameManager;
